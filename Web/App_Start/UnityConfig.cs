@@ -1,6 +1,11 @@
 using System;
+using BusinessLogic;
+using Data;
+using DataAccess;
+using DataAccess.Repositories;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
+using Utility;
 
 namespace Web.App_Start
 {
@@ -35,8 +40,12 @@ namespace Web.App_Start
             // NOTE: To load from web.config uncomment the line below. Make sure to add a Microsoft.Practices.Unity.Configuration to the using statements.
             // container.LoadConfiguration();
 
-            // TODO: Register your types here
-            // container.RegisterType<IProductRepository, ProductRepository>();
+            // TODO: Register your types here            
+            container.RegisterType<DbContext, DataContext>();
+            container.RegisterType<IUserService, UserService>();
+            container.RegisterType<IUserRepository, UserRepository>();
+            container.RegisterType<IBaseRepository<User>, BaseRepository<User>>();
+            container.RegisterType<ICryptoManager, CryptoManager>();
         }
     }
 }
