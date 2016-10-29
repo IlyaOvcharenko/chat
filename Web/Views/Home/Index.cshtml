@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Chatroom";
+}
+
+<div id="inputForm">
+    <input type="text" id="author" />
+    <input type="text" id="message"/>
+    <input type="button" id="sendMessage" value="Отправить"/>
+</div>
+<div id="chatBox"></div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            var isConnected = false;
+            var messageQueue = [];
+
+            var chat = $.connection.chatHub;
+
+            chat.client.addMessages = function (messages) {
+                $.each(messages, function(i, message) {
+                    $('#chatBox').append('<p><b>' + htmlEncode(message.Author)
+                        + '</b>: ' + htmlEncode(message.Text) + '</p>');
+                });
+
+            };
+
+            $.connection.hub.start();
+
+            $.connection.hub.stateChanged(function(state) {
+                isConnected = state.newState === $.signalR.connectionState.connected;
+                if (isConnected && messageQueue && messageQueue.length > 0) {
+                    sendMessageQueue();
+                }
+            });
+
+            $.connection.hub.disconnected(function() {
+                setTimeout(function() {
+                    $.connection.hub.start();
+                }, 5000);
+            });
+
+            $('#sendMessage').click(function() {
+                var message = { author: $('#author').val(), text: $('#message').val() };
+                if (!message.text)
+                    return;
+
+                messageQueue.push(message);
+                $('#message').val('');
+
+                if (isConnected)
+                    sendMessageQueue();
+            });
+
+            function sendMessageQueue() {
+                chat.server.sendMessageQueue(messageQueue).done(function() {
+                    messageQueue = [];
+                });
+            }
+
+        });
+
+        function htmlEncode(value) {
+            var encodedValue = $('<div />').text(value).html();
+            return encodedValue;
+        }
+
+    </script>
+}
