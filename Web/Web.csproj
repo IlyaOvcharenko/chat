@@ -226,6 +226,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Auth\Login.cshtml" />
     <Content Include="Views\Auth\Registration.cshtml" />
+    <Content Include="Views\Auth\LoginBlock.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

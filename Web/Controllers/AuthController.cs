@@ -30,6 +30,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Login(LoginModel model)
         {
             if (ModelState.IsValid)
@@ -51,6 +52,7 @@ namespace Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Registration(RegistrationModel model)
         {
             if (ModelState.IsValid)
@@ -66,6 +68,12 @@ namespace Web.Controllers
         public JsonResult CheckLogin(string login)
         {
             return Json(!_userService.IsLoginExist(login));
+        }
+
+        [HttpGet]
+        public PartialViewResult LoginBlock()
+        {
+            return PartialView(HttpContext.User.Identity);
         }
     }
 }

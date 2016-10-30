@@ -19,7 +19,8 @@ namespace Web.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [MaxLength(50)]
+        [MaxLength(100)]
+        [Required(AllowEmptyStrings = false)]
         public string City { get; set; }
     }
 }

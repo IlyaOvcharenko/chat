@@ -21,7 +21,7 @@ namespace DataAccess
         {
 
             modelBuilder.Entity<User>().Property(t => t.Login).IsRequired().HasMaxLength(50);
-            modelBuilder.Entity<User>().Property(t => t.City).IsRequired().HasMaxLength(50);
+            modelBuilder.Entity<User>().Property(t => t.City).IsRequired().HasMaxLength(100);
             modelBuilder.Entity<User>().Property(t => t.Password).IsRequired().HasMaxLength(50);
 
             base.OnModelCreating(modelBuilder);

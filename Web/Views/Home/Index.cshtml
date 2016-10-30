@@ -2,12 +2,58 @@
     ViewBag.Title = "Chatroom";
 }
 
-<div id="inputForm">
-    <input type="text" id="author" />
-    <input type="text" id="message"/>
-    <input type="button" id="sendMessage" value="Отправить"/>
+@{ Html.RenderAction("LoginBlock", "Auth"); }
+
+<style>
+    #chatBox {
+        min-height: 500px;
+    }
+    #inputForm {
+        padding: 10px;
+    }
+</style>
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="jumbotron">
+                <div id="chatBox"></div>
+            </div>
+
+
+        </div>
+        <div class="col-md-2">
+            <div class="sidebar-nav-fixed pull-right affix">
+                <div class="well">
+                    <p>sdfsdgsfffffffffffffffffffdf</p>
+                    <p>sdfsdf</p>
+                    <p>sdfsdf</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="navbar navbar-fixed-bottom navbar-default">
+        <div id="inputForm">
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    <div class="col-md-8">
+                        <input type="text" id="message" class="form-control" />
+                    </div>
+                    <div class="col-md-1">
+                        <input type="button" id="sendMessage" value="Отправить" class="btn btn-success"/>
+                    </div>
+                </div>
+
+            </div>
+                
+               
+        </div>
+    </div>
+    
 </div>
-<div id="chatBox"></div>
 
 @section scripts
 {
@@ -20,8 +66,8 @@
 
             chat.client.addMessages = function (messages) {
                 $.each(messages, function(i, message) {
-                    $('#chatBox').append('<p><b>' + htmlEncode(message.Author)
-                        + '</b>: ' + htmlEncode(message.Text) + '</p>');
+                    $('#chatBox').append('<div><b>' + htmlEncode(message.Author)
+                        + '</b>: ' + htmlEncode(message.Text) + '</div>');
                 });
 
             };
@@ -42,7 +88,7 @@
             });
 
             $('#sendMessage').click(function() {
-                var message = { author: $('#author').val(), text: $('#message').val() };
+                var message = { text: $('#message').val() };
                 if (!message.text)
                     return;
 
