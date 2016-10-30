@@ -26,10 +26,15 @@
         </div>
         <div class="col-md-2">
             <div class="sidebar-nav-fixed pull-right affix">
+
                 <div class="well">
-                    <p>sdfsdgsfffffffffffffffffffdf</p>
-                    <p>sdfsdf</p>
-                    <p>sdfsdf</p>
+                    <div>
+                        <h4> Online:</h4>
+                    </div>
+                    <div id="onlineUsers" >
+                        
+                    </div>
+
                 </div>
             </div>
 
@@ -70,6 +75,24 @@
                         + '</b>: ' + htmlEncode(message.Text) + '</div>');
                 });
 
+            };
+
+            chat.client.userConnected = function (name) {      
+                $('#chatBox').append('<div>Приветствуем <b>' + htmlEncode(name)
+                        + '</b></div>');
+            };
+
+            chat.client.userDisconnected = function (name) {
+                $('#chatBox').append('<div><b>' + htmlEncode(name)
+                        + '</b> вышел</div>');
+            };
+
+            chat.client.changeUserList = function (users) {
+                $('#onlineUsers').empty();
+                $.each(users, function(i, user) {
+                    $('#onlineUsers').append('<div><b>' + htmlEncode(user)
+                        + '</b></div>');
+                });
             };
 
             $.connection.hub.start();

@@ -20,7 +20,8 @@ namespace DataAccess
         {
             var users = new Collection<User>
             {
-                new User {Login = "admin", Role = Role.Admin, Password = "33354741122871651676713774147412831195", City = "DefaultCity"}
+                new User {Login = "admin", Role = Role.Admin, Password = "33354741122871651676713774147412831195", City = "DefaultCity"},
+                new User {Login = "user1", Role = Role.User, Password = "33354741122871651676713774147412831195", City = "DefaultCity"}
             };
 
             
