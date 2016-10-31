@@ -26,7 +26,9 @@ namespace DataAccess.Repositories
 
         public T Create(T entity)
         {
-            return DataContext.Set<T>().Add(entity);
+            DataContext.Set<T>().Add(entity);
+            DataContext.SaveChanges();
+            return entity;
         }
 
         public IQueryable<T> GetAll()
