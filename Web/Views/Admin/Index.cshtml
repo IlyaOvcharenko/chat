@@ -1,0 +1,76 @@
+﻿@model Web.Models.Admin.UsersPageViewModel
+@{
+    ViewBag.Title = "Пользователи";
+}
+
+<div class="col-lg-12">
+    <h2>Пользователи</h2>
+    <table class="table table-striped">
+        <th>
+            Логин
+        </th>
+        <th>
+            Город
+        </th>
+        <tbody id="usersList">
+            @Html.Partial("Partial/_UsersListPartial", Model.PagedList)
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">
+                    <nav>
+                        <ul class="pagination">
+                            <li>
+                                <a href="javascript:goToPrevPage()" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            
+                            <li>
+                                <a href="javascript:goToNextPage()" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </td>
+
+            </tr>
+        </tfoot>
+    </table>
+    @using (Ajax.BeginForm("UsersPage", null,
+                        new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "usersList" }, new { id = "pagedForm" }))
+    {
+        @Html.HiddenFor(m => m.PagedList.PageNumber)
+        @Html.HiddenFor(m => m.PagedList.PageSize)
+        @Html.HiddenFor(m => m.PagedList.EntityCount)
+        @Html.HiddenFor(m => m.PagedList.PageCount)
+    }
+</div>
+
+@section scripts
+{
+<script type="text/javascript">
+
+        function goToNextPage() {
+            var currentPage = parseInt($('#PagedList_PageNumber').val());
+            var pageCount = parseInt($('#PagedList_PageCount').val());
+            if (currentPage + 2 <= pageCount) {
+                setPage(currentPage + 1);
+                $('#pagedForm').submit();
+            }
+        }
+
+        function goToPrevPage() {
+            var currentPage = $('#PagedList_PageNumber').val();
+            if (currentPage - 1 >=0) {
+                setPage(currentPage - 1);
+                $('#pagedForm').submit();
+            }
+        }
+
+        function setPage(pageNumber) {
+            $('#PagedList_PageNumber').val(pageNumber);
+        }
+</script>
+}

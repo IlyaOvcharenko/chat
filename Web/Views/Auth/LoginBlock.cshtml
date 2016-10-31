@@ -1,0 +1,26 @@
+﻿@using Data.Enums
+@model System.Security.Principal.IPrincipal
+<div class="navbar navbar-fixed-top navbar-default">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-md-offset-10">Вы вошли как @Model.Identity.Name</div>
+            @if (Model.IsInRole(Role.Admin.ToString()))
+            {
+                <div class="col-md-3 col-md-offset-10">@Html.ActionLink("Панель администратора", "Index", "Admin")</div>
+            }    
+            <div class="col-md-2 col-md-offset-10"> <a onclick="onLogOut()" href="#">Выйти</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function onLogOut() {
+        $.connection.hub.stop();
+        window.location.replace('@Url.Action("LogOut", "Auth")');
+    }
+</script> 
+
+

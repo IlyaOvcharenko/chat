@@ -23,15 +23,15 @@ namespace BusinessLogic
 
         public EntityDataPage<User> GetUsersPage(int pageNumber, int pageSize)
         {
-            var list =
-                _userRepository.GetAll()
-                    .OrderBy(t => t.Login)
-                    .Skip(pageSize * pageNumber)
+            var query = _userRepository.GetAll()
+                .OrderBy(t => t.Login);
+            var count = query.Count();
+            var list = query.Skip(pageSize * pageNumber)
                     .Take(pageSize)
                     .ToList();
             return new EntityDataPage<User>
             {
-                EntityCount = list.Count,
+                EntityCount = count,
                 List = list,
                 PageNumber = pageNumber,
                 PageSize = pageSize

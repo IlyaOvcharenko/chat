@@ -17,5 +17,7 @@ namespace BusinessLogic
         bool ValidateUser(string login, string password);
 
         bool IsLoginExist(string login);
+
+        User GetUserByLogin(string login);
     }
 }

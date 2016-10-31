@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using BusinessLogic;
-using Web.Models;
+using Web.Models.Auth;
 
 namespace Web.Controllers
 {
@@ -37,7 +37,7 @@ namespace Web.Controllers
             {
                 if (_userService.ValidateUser(model.Login, model.Password))
                 {
-                    FormsAuthentication.SetAuthCookie(model.Login, true);
+                    FormsAuthentication.SetAuthCookie(model.Login, false);
                     return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError("", "Неверный логин или пароль ");
@@ -73,7 +73,7 @@ namespace Web.Controllers
         [HttpGet]
         public PartialViewResult LoginBlock()
         {
-            return PartialView(HttpContext.User.Identity);
+            return PartialView(HttpContext.User);
         }
     }
 }

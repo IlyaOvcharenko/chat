@@ -1,0 +1,16 @@
+﻿@model BusinessLogic.Paging.EntityDataPage<Data.User>
+
+
+        @foreach (var user in Model.List)
+        {
+            <tr>
+                <td>
+                    @user.Login
+                </td>
+                <td>
+                    @user.City
+                </td>
+
+            </tr>
+        }
+    
