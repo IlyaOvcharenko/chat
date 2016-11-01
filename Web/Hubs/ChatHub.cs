@@ -5,11 +5,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNet.SignalR;
+using BusinessLogic;
+using Data;
+using Microsoft.AspNet.SignalR.Hubs;
 
 namespace Web.Hubs
 {
     public class ChatHub : Hub
     {
+        private IUserActivityService userActivityService;
+        private IUserService userService;
+        public ChatHub(IUserActivityService userActivityService, IUserService userService)
+        {
+            this.userActivityService = userActivityService;
+            this.userService = userService;
+        }
         public static IDictionary<string, HashSet<string>> Connections = new ConcurrentDictionary<string, HashSet<string>>();
 
         public void SendMessageQueue(List<Message> messages)
@@ -22,6 +32,7 @@ namespace Web.Hubs
                 message.DateTime = DateTime.Now;
             }
             Clients.All.addMessages(messages);
+            RegisterActivity(Context, messages.Count);
         }
 
         public override Task OnConnected()
@@ -56,6 +67,16 @@ namespace Web.Hubs
             }
             Clients.All.changeUserList(Connections.Keys.OrderBy(c => c));
             return base.OnDisconnected(stopCalled);
+        }
+
+        private void RegisterActivity(HubCallerContext context, int messageCount)
+        {
+            string ipAddress;
+            object ipAddressObject;
+            Context.Request.Environment.TryGetValue("server.RemoteIpAddress", out ipAddressObject);
+            ipAddress = ipAddressObject != null ? (string) ipAddressObject : string.Empty;
+            var user = userService.GetUserByLogin(context.User.Identity.Name);
+            userActivityService.RegisterActivity(new UserActivity {ClientIpAddress = ipAddress , DateTime = DateTime.Now, Date = DateTime.Today, MessageCount = messageCount, UserId = user?.Id ?? 0 });
         }
     }
 

@@ -20,8 +20,6 @@ namespace DataAccess.Repositories
         void Update(T entity);
 
         void Delete(T entity);
-
-        void Delete(int id);
     }
 
 

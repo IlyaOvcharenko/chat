@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BusinessLogic.Paging;
 using Data;
+using Data.Enums;
 using DataAccess;
 using DataAccess.Repositories;
 using Utility;
@@ -12,18 +13,18 @@ namespace BusinessLogic
 {
     public class UserService : IUserService
     {
-        private IUserRepository _userRepository;
-        private ICryptoManager _cryptoManager;
+        private IUserRepository userRepository;
+        private ICryptoManager cryptoManager;
 
         public UserService(IUserRepository userRepository, ICryptoManager cryptoManager)
         {
-            _userRepository = userRepository;
-            _cryptoManager = cryptoManager;
+            this.userRepository = userRepository;
+            this.cryptoManager = cryptoManager;
         }
 
         public EntityDataPage<User> GetUsersPage(int pageNumber, int pageSize)
         {
-            var query = _userRepository.GetAll()
+            var query = userRepository.GetAll()
                 .OrderBy(t => t.Login);
             var count = query.Count();
             var list = query.Skip(pageSize * pageNumber)
@@ -40,25 +41,25 @@ namespace BusinessLogic
 
         public void Register(string login, string password, string city)
         {
-            var user = new User { Login = login, Password = _cryptoManager.GetHash(password), City = city};
-            _userRepository.Create(user);
+            var user = new User { Login = login, Password = cryptoManager.GetHash(password), City = city, Role = Role.User};
+            userRepository.Create(user);
         }
 
         public bool ValidateUser(string login, string password)
         {
-            var user = _userRepository.FindUserByLogin(login);
-            return user != null && _cryptoManager.VarifyHash(user.Password, password);
+            var user = userRepository.FindUserByLogin(login);
+            return user != null && cryptoManager.VarifyHash(user.Password, password);
         }
 
 
         public bool IsLoginExist(string login)
         {
-            return _userRepository.FindUserByLogin(login) != null;
+            return userRepository.FindUserByLogin(login) != null;
         }
 
         public User GetUserByLogin(string login)
         {
-            return _userRepository.FindUserByLogin(login);
+            return userRepository.FindUserByLogin(login);
         }
     }
 }

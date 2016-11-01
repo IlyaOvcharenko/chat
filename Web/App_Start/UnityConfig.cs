@@ -45,6 +45,8 @@ namespace Web.App_Start
             container.RegisterType<DbContext, DataContext>();
             container.RegisterType<IUserService, UserService>();
             container.RegisterType<IUserRepository, UserRepository>();
+            container.RegisterType<IUserActivityService, UserActivityService>(new ContainerControlledLifetimeManager());
+            container.RegisterType<IUserActivityRepository, UserActivityRepository>(new ContainerControlledLifetimeManager());
             container.RegisterType<IBaseRepository<User>, BaseRepository<User>>();
             container.RegisterType<ICryptoManager, CryptoManager>();
         }

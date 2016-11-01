@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,15 +20,15 @@ namespace DataAccess.Repositories
             this.DataContext = dataContext;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             DataContext.Dispose();
         }
 
-        public T Create(T entity)
+        public  T Create(T entity)
         {
             DataContext.Set<T>().Add(entity);
-            DataContext.SaveChanges();
+            this.SaveChanges();
             return entity;
         }
 
@@ -44,19 +45,18 @@ namespace DataAccess.Repositories
         public void Update(T entity)
         {
             DataContext.Entry(entity).State = EntityState.Modified;
-            DataContext.SaveChanges();
+            this.SaveChanges();
         }
 
-        public void Delete(T entity)
+        public  void Delete(T entity)
         {
             DataContext.Set<T>().Remove(entity);
-            DataContext.SaveChanges();
+            this.SaveChanges();
         }
 
-        public void Delete(int id)
+        protected virtual void SaveChanges()
         {
-            var entity = GetById(id);
-            Delete(entity);
+            DataContext.SaveChanges();
         }
     }
 }

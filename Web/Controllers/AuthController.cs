@@ -11,11 +11,11 @@ namespace Web.Controllers
 {
     public class AuthController : Controller
     {
-        private IUserService _userService;
+        private IUserService userService;
 
         public AuthController(IUserService userService)
         {
-            _userService = userService;
+            this.userService = userService;
         }
 
         public ActionResult Login()
@@ -35,7 +35,7 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_userService.ValidateUser(model.Login, model.Password))
+                if (userService.ValidateUser(model.Login, model.Password))
                 {
                     FormsAuthentication.SetAuthCookie(model.Login, false);
                     return RedirectToAction("Index", "Home");
@@ -57,7 +57,7 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _userService.Register(model.Login, model.Password, model.City);
+                userService.Register(model.Login, model.Password, model.City);
                 FormsAuthentication.SetAuthCookie(model.Login, true);
                 return RedirectToAction("Index", "Home");
             }
@@ -67,7 +67,7 @@ namespace Web.Controllers
         [HttpPost]
         public JsonResult CheckLogin(string login)
         {
-            return Json(!_userService.IsLoginExist(login));
+            return Json(!userService.IsLoginExist(login));
         }
 
         [HttpGet]

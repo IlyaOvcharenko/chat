@@ -40,7 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dto\UserInfo.cs" />
+    <Compile Include="IUserActivityService.cs" />
     <Compile Include="IUserService.cs" />
+    <Compile Include="UserActivityService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="Paging\EntityDataPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

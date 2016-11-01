@@ -17,11 +17,13 @@ namespace DataAccess
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<UserActivity> UserActivities { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
 
             modelBuilder.Entity<User>().Property(t => t.Login).IsRequired().HasMaxLength(50);
-            modelBuilder.Entity<User>().Property(t => t.City).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<User>().Property(t => t.City).IsRequired().HasMaxLength(50);
             modelBuilder.Entity<User>().Property(t => t.Password).IsRequired().HasMaxLength(50);
 
             base.OnModelCreating(modelBuilder);

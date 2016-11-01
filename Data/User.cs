@@ -17,5 +17,7 @@ namespace Data
         public string Password { get; set; }
 
         public Role Role { get; set; }
+
+        public virtual ICollection<UserActivity> UserActivities { get; set; } 
     }
 }
