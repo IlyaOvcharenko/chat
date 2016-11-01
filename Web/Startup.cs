@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using BusinessLogic;
+using Data;
+using DataAccess.Repositories;
 using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
 using Owin;

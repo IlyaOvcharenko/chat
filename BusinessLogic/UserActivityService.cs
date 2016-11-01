@@ -12,28 +12,43 @@ namespace BusinessLogic
 {
     public class UserActivityService : IUserActivityService
     {
-        private IUserActivityRepository userActivityRepository;
+        private IBaseRepository<UserActivity> userActivityRepository;
+
+        private IUserRepository userRepository;
+
+        private static ICollection<UserActivity> localUserActivitiesStorage; 
 
         private static int _activitiesToRegister;
-        public UserActivityService(IUserActivityRepository userActivityRepository)
+
+        public UserActivityService(IBaseRepository<UserActivity> userActivityRepository, IUserRepository userRepository)
         {
             this.userActivityRepository = userActivityRepository;
+            this.userRepository = userRepository;
+            localUserActivitiesStorage = new List<UserActivity>();
         }
         public EntityDataPage<UserInfo> GetUserActivitiesPage(int pageNumber, int pageSize)
         {
-            var dtoQuery = from a in userActivityRepository.GetAll()
-                group a by a.UserId
-                into grouped
-                select new UserInfo {Login = grouped.FirstOrDefault().User.Login, City = grouped.FirstOrDefault().User.City,
-                    MessageCount = grouped.Sum(g => g.MessageCount),
-                    ClientIpAddress = grouped.FirstOrDefault(g=>g.DateTime == grouped.Max(d=>d.DateTime)).ClientIpAddress, LastActivityDateTime = grouped.Max(d => d.DateTime),
-                    AverageMessageCount = userActivityRepository.GetAll().Where(ac=>ac.User.City == grouped.FirstOrDefault().User.City).Average(act=>act.MessageCount)
-                };
-            var count = dtoQuery.Count();
+            var query = userRepository.GetAll();
 
-            var list = dtoQuery.Skip(pageSize * pageNumber)
-                   .Take(pageSize)
-                   .ToList();
+            var count = query.Count();
+
+            var list =
+                query.Select(
+                    u =>
+                        new UserInfo
+                        {
+                            Login = u.Login,
+                            City = u.City,
+                            ClientIpAddress =
+                                u.UserActivities.FirstOrDefault(a => a.DateTime == u.UserActivities.Max(d => d.DateTime))
+                                    .ClientIpAddress,
+                            LastActivityDateTime = u.UserActivities.Max(d => d.DateTime),
+                            MessageCount = u.UserActivities.Sum(m => m.MessageCount)
+                        }).OrderBy(u => u.Login).Skip(pageSize*pageNumber)
+                    .Take(pageSize)
+                    .ToList();
+            ;
+            list.ForEach(i => i.AverageMessageCount = GetAverageMessageCount(i.City));
             return new EntityDataPage<UserInfo>
             {
                 EntityCount = count,
@@ -47,16 +62,10 @@ namespace BusinessLogic
         public void RegisterActivity(UserActivity userActivity)
         {
             var date = DateTime.Today;
-            var existActivity = userActivityRepository.GetAll().FirstOrDefault(a => a.UserId == userActivity.UserId && a.Date == date);
-            var existLocalActivity = userActivityRepository.GetLocals().FirstOrDefault(a => a.UserId == userActivity.UserId && a.Date == date);
-            if (existActivity != null)
-            {
-                existActivity.DateTime = userActivity.DateTime;
-                existActivity.ClientIpAddress = userActivity.ClientIpAddress;
-                existActivity.MessageCount += userActivity.MessageCount;
-                userActivityRepository.Update(existActivity);
-            }
-            else if (existLocalActivity != null)
+            
+            var existLocalActivity = localUserActivitiesStorage.FirstOrDefault(a => a.UserId == userActivity.UserId && a.Date == date);
+
+            if (existLocalActivity != null)
             {
                 existLocalActivity.DateTime = userActivity.DateTime;
                 existLocalActivity.ClientIpAddress = userActivity.ClientIpAddress;
@@ -64,13 +73,40 @@ namespace BusinessLogic
             }
             else
             {
-                userActivityRepository.Create(userActivity);
+                localUserActivitiesStorage.Add(userActivity);
             }
             _activitiesToRegister += 1;
             if (_activitiesToRegister > 5)
             {
-                userActivityRepository.Flush();
+                foreach (var activity in localUserActivitiesStorage)
+                {
+                    var remoteActivity = userActivityRepository.GetAll().FirstOrDefault(a => a.UserId == activity.UserId && a.Date == date);
+                    if (remoteActivity != null)
+                    {
+                        remoteActivity.DateTime = activity.DateTime;
+                        remoteActivity.ClientIpAddress = activity.ClientIpAddress;
+                        remoteActivity.MessageCount += activity.MessageCount;
+                        userActivityRepository.Update(remoteActivity);
+                    }
+                    else
+                    {
+                        userActivityRepository.Add(activity);
+                    }
+                }
+                _activitiesToRegister = 0;
+                localUserActivitiesStorage.Clear();
+                userActivityRepository.SaveChanges();
             }
+        }
+
+        private double? GetAverageMessageCount(string city)
+        {
+            var query = userActivityRepository.GetAll().Where(a => a.User.City == city && a.Date == DateTime.Today);
+            if (!query.Any())
+                return 0;
+            double? avg = query.Average(a => a.MessageCount);
+            return avg;
+
         }
     }
 }

@@ -11,7 +11,7 @@ namespace DataAccess.Repositories
 {
     public interface IBaseRepository<T> : IDisposable where T : BaseEntity
     {
-        T Create(T entity);
+        T Add(T entity);
 
         IQueryable<T> GetAll();
 
@@ -20,6 +20,8 @@ namespace DataAccess.Repositories
         void Update(T entity);
 
         void Delete(T entity);
+
+        void SaveChanges();
     }
 
 

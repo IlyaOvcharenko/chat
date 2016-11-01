@@ -20,16 +20,14 @@ namespace DataAccess.Repositories
             this.DataContext = dataContext;
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
             DataContext.Dispose();
         }
 
-        public  T Create(T entity)
+        public T Add(T entity)
         {
-            DataContext.Set<T>().Add(entity);
-            this.SaveChanges();
-            return entity;
+            return DataContext.Set<T>().Add(entity);
         }
 
         public IQueryable<T> GetAll()
@@ -45,16 +43,14 @@ namespace DataAccess.Repositories
         public void Update(T entity)
         {
             DataContext.Entry(entity).State = EntityState.Modified;
-            this.SaveChanges();
         }
 
         public  void Delete(T entity)
         {
             DataContext.Set<T>().Remove(entity);
-            this.SaveChanges();
         }
 
-        protected virtual void SaveChanges()
+        public virtual void SaveChanges()
         {
             DataContext.SaveChanges();
         }

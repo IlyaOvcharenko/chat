@@ -42,7 +42,8 @@ namespace BusinessLogic
         public void Register(string login, string password, string city)
         {
             var user = new User { Login = login, Password = cryptoManager.GetHash(password), City = city, Role = Role.User};
-            userRepository.Create(user);
+            userRepository.Add(user);
+            userRepository.SaveChanges();
         }
 
         public bool ValidateUser(string login, string password)

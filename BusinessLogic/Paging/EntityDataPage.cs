@@ -8,7 +8,7 @@ namespace BusinessLogic.Paging
 {
     public class EntityDataPage<T>
     {
-        public List<T> List { get; set; }
+        public IList<T> List { get; set; }
 
         public int EntityCount { get; set; }
 
