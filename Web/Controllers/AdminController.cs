@@ -11,22 +11,22 @@ namespace Web.Controllers
     [Authorize(Roles = "admin")]
     public class AdminController : Controller
     {
-        private IUserService userService;
-        public AdminController(IUserService userService)
+        private IUserActivityService userActivityService;
+        public AdminController(IUserActivityService userActivityService)
         {
-            this.userService = userService;
+            this.userActivityService = userActivityService;
         }
         public ActionResult Index()
         {
             var model = new UsersPageViewModel();
-            model.PagedList = userService.GetUsersPage(0, 5);
+            model.PagedList = userActivityService.GetUserActivitiesPage(0, 5);
             return View(model);
         }
 
         [HttpPost]
         public ActionResult UsersPage(UsersPageViewModel model)
         {
-            var page = userService.GetUsersPage(model.PagedList.PageNumber, model.PagedList.PageSize);
+            var page = userActivityService.GetUserActivitiesPage(model.PagedList.PageNumber, model.PagedList.PageSize);
             return PartialView("Partial/_UsersListPartial", page);
         }
     }

@@ -1,4 +1,4 @@
-﻿@model BusinessLogic.Paging.EntityDataPage<Data.User>
+﻿@model BusinessLogic.Paging.EntityDataPage<BusinessLogic.Dto.UserInfo>
 
 
         @foreach (var user in Model.List)
@@ -10,7 +10,18 @@
                 <td>
                     @user.City
                 </td>
-
+                <td>
+                    @user.LastActivityDateTime
+                </td>
+                <td>
+                    @user.ClientIpAddress
+                </td>
+                <td>
+                    @user.MessageCount
+                </td>
+                <td>
+                    @user.AverageMessageCount
+                </td>
             </tr>
         }
     

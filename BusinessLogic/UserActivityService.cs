@@ -24,7 +24,7 @@ namespace BusinessLogic
             var dtoQuery = from a in userActivityRepository.GetAll()
                 group a by a.UserId
                 into grouped
-                select new UserInfo {Login = grouped.First().User.Login, City = grouped.First().User.City,
+                select new UserInfo {Login = grouped.FirstOrDefault().User.Login, City = grouped.FirstOrDefault().User.City,
                     MessageCount = grouped.Sum(g => g.MessageCount),
                     ClientIpAddress = grouped.FirstOrDefault(g=>g.DateTime == grouped.Max(d=>d.DateTime)).ClientIpAddress, LastActivityDateTime = grouped.Max(d => d.DateTime),
                     AverageMessageCount = userActivityRepository.GetAll().Where(ac=>ac.User.City == grouped.FirstOrDefault().User.City).Average(act=>act.MessageCount)
