@@ -10,7 +10,6 @@ namespace BusinessLogic
 {
     public interface IUserService
     {
-        EntityDataPage<User> GetUsersPage(int pageNumber, int pageSize);
 
         void Register(string login, string password, string city);
 

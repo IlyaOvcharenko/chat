@@ -22,23 +22,6 @@ namespace BusinessLogic
             this.cryptoManager = cryptoManager;
         }
 
-        public EntityDataPage<User> GetUsersPage(int pageNumber, int pageSize)
-        {
-            var query = userRepository.GetAll()
-                .OrderBy(t => t.Login);
-            var count = query.Count();
-            var list = query.Skip(pageSize * pageNumber)
-                    .Take(pageSize)
-                    .ToList();
-            return new EntityDataPage<User>
-            {
-                EntityCount = count,
-                List = list,
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
-        }
-
         public void Register(string login, string password, string city)
         {
             var user = new User { Login = login, Password = cryptoManager.GetHash(password), City = city, Role = Role.User};
